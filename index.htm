@@ -4,13 +4,64 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Simple red light green light game from squid game.">
+    <meta name="keywords" content="red, green, light, game, squid, game, simple, game, html5, canvas, javascript, web, development, threejs, three, js">
+    <meta property="og:image" content="img/preview.png" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="./css/style.css">
     <title>The Squid Game</title>
 </head>
 <body>
+    <p class="text">Loading....</p>
+
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Red Light Green Light</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p class="info">
+                <u>About</u>: Ball in the right side is the Player.<br/>
+                You can press <b>Up Arrow</b> to <span style="color: green;font-weight: bold;">Move</span><br/> Release the Up Arrow key to <span style="color:maroon;font-weight: bold;">Stop</span><br/>
+                <u>Rules</u>: Same as that in the Squid Game.
+            </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success readyBtn" data-bs-dismiss="modal" id="readyBtn">Understood!.. Ready to Play!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <script>
+         $(document).ready(function(){
+        $("#staticBackdrop").modal('show');
+    });
+    </script>
     <script src="./js/three.min.js"></script>
     <script src="./js/GLTFLoader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"></script>
     <script src="./js/main.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
+
 </body>
+
+
+
+
+
+
+
+
+
+
+
 </html>
