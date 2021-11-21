@@ -230,6 +230,7 @@ function animate(){
     requestAnimationFrame(animate);
     player.update();
 }
+
 animate();
 
 // To make it responsive
