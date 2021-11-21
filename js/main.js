@@ -11,12 +11,11 @@ renderer.setClearColor(0xb7c3f3,1);
 const light = new THREE.AmbientLight( 0xffffff,1 ); // soft white light
 scene.add( light );
 
-//new
-
-// const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.3 );
-// directionalLight.castShadow = true
-// scene.add( directionalLight )
-// directionalLight.position.set( 0, 1, 1 )
+// new
+const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.3 );
+directionalLight.castShadow = true
+scene.add( directionalLight )
+directionalLight.position.set( 0, 1, 1 )
 
 camera.position.z = 5;
 
@@ -24,13 +23,12 @@ camera.position.z = 5;
 const loader = new THREE.GLTFLoader();
 
 // All global variables
-const startPosition = 6 //3
+const startPosition = 4
 const endPosition = -startPosition
 const text = document.querySelector(".text")
-const TIME_LIMIT = 10
-const gameStatus = "Get ready.."
+const TIME_LIMIT = 15
+let gameStatus = "Get ready.."
 let isLookingBack = true
-
 const readyBtn = document.querySelector('.readyBtn')
 
 // music
@@ -39,6 +37,7 @@ const introMusic = new Audio('./music/headline.mp3')
 const greenLight = new Audio('./music/greenLight.mp3')
 const redLight = new Audio('./music/redLightF.mp3')
 const shot = new Audio('./music/shot.mp3')
+const endMusic = 0
 
 function createCube(size,positionX, rotateY=0, color=0xfbc851){
     const geometry = new THREE.BoxGeometry(size.w,size.h,size.d);
@@ -50,7 +49,7 @@ function createCube(size,positionX, rotateY=0, color=0xfbc851){
     return cube;
 }
 
-function delay(ms){
+async function delay(ms){
     return new Promise(resolve => setTimeout(resolve,ms));
 }
 
@@ -59,20 +58,20 @@ class Doll{
         // load the model
         loader.load("../models/scene.gltf", (gltf)=>{
             scene.add(gltf.scene);
-            gltf.scene.scale.set(.4,.4,.4)
+            gltf.scene.scale.set(.4,.4,.4) 
             gltf.scene.position.set(0,-1,0);
             this.doll = gltf.scene;
             previewMusic.play();
-            //animate();
         })
     }
 
     // Methods 
     lookBack(){
-        redLight.play();
+        greenLight.play();
+        redLight.pause();
         //old style of animating: this.doll.rotation.y = -3
         
-        // using gsap animation
+        // new: using gsap animation for smooth effects
         gsap.to(this.doll.rotation,{y:-3, duration:.45})  //time in millis
         setTimeout(()=>{
             isLookingBack = true
@@ -80,6 +79,7 @@ class Doll{
     }
     lookFront(){
         greenLight.play();
+        redLight.pause();
         //old style of animating: this.doll.rotation.y = 0
         
         //smooth animation using gsap
@@ -99,8 +99,36 @@ class Doll{
         await delay((Math.random * 750)+750);
         this.start();
     }
+}
+
+function createTrackToRun(){
+    createCube({w:startPosition*2+.2,h:1.5,d:1},0,0,0xe59716).position.z = -1
+    createCube({w:.2,h:1.5,d:1},startPosition,-.35)
+    createCube({w:.2,h:1.5,d:1},endPosition,.35)
+}
+createTrackToRun(); 
+let doll = new Doll();
+
+
+class Player{
+    constructor(){
+        const geometry = new THREE.SphereGeometry( .3, 32, 16 );
+        const material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+        const sphere = new THREE.Mesh( geometry, material );
+        sphere.position.z = .8;
+        sphere.position.x = startPosition;
+        scene.add( sphere );
+        this.player = sphere;
+        this.playerInfo = {
+            positionX: startPosition,
+            velocity: 0
+        }
+    }
+    run(){
+        this.playerInfo.velocity = .03
+    }
     stop(){
-        this.lookFront();
+        this.playerInfo.velocity = 0
     }
     check(){
         if(this.playerInfo.velocity>0 && !isLookingBack){
@@ -116,36 +144,8 @@ class Doll{
             previewMusic.play();
         }
     }
-}
-
-function createTrack(){
-    createCube({w:startPosition*2,h:1.5,d:1},0,0,0xe5a716).position.z = -.8
-    createCube({w:.2,h:1.5,d:1},startPosition,.35)
-    createCube({w:.2,h:1.5,d:1},endPosition,-.35)
-}
-createTrack();
-
-class Player{
-    constructor(){
-        const geometry = new THREE.SphereGeometry( .3, 32, 16 );
-        const material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
-        const sphere = new THREE.Mesh( geometry, material );
-        sphere.position.z = 1;
-        sphere.position.x = startPosition;
-        scene.add( sphere );
-        this.player = sphere;
-        this.playerInfo = {
-            positionX: startPosition,
-            velocity: 0
-        }
-    }
-    run(){
-        this.playerInfo.velocity = .03
-    }
-    stop(){
-        this.playerInfo.velocity = 0
-    }
     update(){
+        this.check()
         this.playerInfo.positionX -= this.playerInfo.velocity;
         this.player.position.x = this.playerInfo.positionX;
     }
@@ -153,11 +153,10 @@ class Player{
 
 // creating new object
 const player = new Player();
-let doll = new Doll();
 
 
 // Initial
-async function init(){
+async function initGame(){
     previewMusic.pause();
     introMusic.play();
     await delay(1100)
@@ -170,30 +169,30 @@ async function init(){
     text.innerText = "Go!"
     startGame();
 }
+
 function startGame(){
     gameStatus="started"
-    let progress = createCube({w:5,h:.1,d:1},0)
+    let progress = createCube({w:8,h:.1,d:1},0)
     progress.position.y=3.5
-    gsap.to(progress.scale,{x:0,duration:TIME_LIMIT})
-    doll.start()
+    gsap.to(progress.scale,{x:0,duration:TIME_LIMIT,ease:"none"})
     setTimeout(()=>{
         if(gameStatus != "over"){
             text.innerText = "You ran out of time"
+                //music
+            gameStatus="over"
         }
     },TIME_LIMIT*1000)
+    doll.start()
 }
-// if(document.getElementById('readyBtn').clicked == true){
-//     init()
-// }
 
 readyBtn.addEventListener('click',()=>{
     if(readyBtn.innerText == "Understood!.. Ready to Play!"){
-        init();
+        initGame();
         document.querySelector('.modal').style.display="none";
     }
 })
 
-function animate(){
+function animate(){ 
     if(gameStatus == "over")    return
     renderer.render(scene,camera);
     /* code sequence doesnt matter */
@@ -219,21 +218,18 @@ function onWindowResize(){
     renderer.setSize(window.innerWidth, window.innerHeight)
 }
 
+// arrow is pressed
 window.addEventListener('keydown',(e)=>{
     if(gameStatus != "started")     return;
 
     if(e.key == "ArrowUp"){
         player.run()
     }
-    // if(e.key == "ArrowDown"){
-    //     player.stop()
-    // }
 })
+
+// arrow is released
 window.addEventListener('keyup',(e)=>{
     if(e.key == "ArrowUp"){
         player.stop()
     }
-    // if(e.key == "ArrowDown"){
-    //     player.stop()
-    // }
 })
