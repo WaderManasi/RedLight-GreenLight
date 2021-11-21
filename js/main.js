@@ -17,12 +17,13 @@ directionalLight.castShadow = true
 scene.add( directionalLight )
 directionalLight.position.set( 0, 1, 1 )
 
-camera.position.z = 5;
+camera.position.z = 5.2;
 
 // creating a new GLTFLoader model
 const loader = new THREE.GLTFLoader();
 
 // All global variables
+let flag = true
 const startPosition = 4
 const endPosition = -startPosition
 const text = document.querySelector(".text")
@@ -30,9 +31,11 @@ const TIME_LIMIT = 15
 let gameStatus = "Get ready.."
 let isLookingBack = true
 const readyBtn = document.querySelector('.readyBtn')
+const startAgain = document.querySelector('.startAgain')
 
 // music
 const previewMusic = new Audio('./music/preview.mp3')
+const gameOver = new Audio('./music/gameOver.mp3')
 const introMusic = new Audio('./music/headline.mp3')
 const greenLight = new Audio('./music/greenLight.mp3')
 const redLight = new Audio('./music/redLightF.mp3')
@@ -64,11 +67,11 @@ class Doll{
             previewMusic.play();
         })
     }
-
     // Methods 
     lookBack(){
         greenLight.play();
         redLight.pause();
+
         //old style of animating: this.doll.rotation.y = -3
         
         // new: using gsap animation for smooth effects
@@ -78,8 +81,9 @@ class Doll{
         },150)
     }
     lookFront(){
-        greenLight.play();
-        redLight.pause();
+        greenLight.pause();
+        redLight.play();
+
         //old style of animating: this.doll.rotation.y = 0
         
         //smooth animation using gsap
@@ -90,13 +94,14 @@ class Doll{
         },
         450)  
     }
-
     // random back & front movement in random delay time
     async start(){
+        if(!flag)
+        return false;
         this.lookBack();
-        await delay((Math.random * 1000)+1000);
+        await delay((Math.random() * 100)+1000);
         this.lookFront();
-        await delay((Math.random * 750)+750);
+        await delay((Math.random() * 750)+1000);
         this.start();
     }
 }
@@ -133,15 +138,21 @@ class Player{
     check(){
         if(this.playerInfo.velocity>0 && !isLookingBack){
             //alert('You Lose!')
+            flag=false
             text.innerText = "You Lose!"
             gameStatus = "over"
-            previewMusic.play();
+            greenLight.pause();
+            redLight.pause();
+            gameOver.play();
         }    
         if(this.playerInfo.positionX < endPosition+.4){
             //alert('You Win!')
+            flag=false
+            greenLight.pause();
+            redLight.pause();
+            gameOver.play();
             text.innerText = "You Win!"
             gameStatus = "over"
-            previewMusic.play();
         }
     }
     update(){
@@ -157,6 +168,7 @@ const player = new Player();
 
 // Initial
 async function initGame(){
+    gameOver.pause();
     previewMusic.pause();
     introMusic.play();
     await delay(1100)
@@ -178,8 +190,19 @@ function startGame(){
     setTimeout(()=>{
         if(gameStatus != "over"){
             text.innerText = "You ran out of time"
-                //music
+            greenLight.pause();
+            redLight.pause();
             gameStatus="over"
+            gameOver.play();
+            // startAgain.addEventListener('click',()=>{
+            //     if(startAgain.innerText == "Play Again"){
+            //         initGame();
+            //         document.querySelector('.modal').style.display="none";
+            //     }
+            // })
+            setTimeout(()=>{
+                initGame
+            },6000)
         }
     },TIME_LIMIT*1000)
     doll.start()
