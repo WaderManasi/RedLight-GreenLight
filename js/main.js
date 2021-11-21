@@ -5,7 +5,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-renderer.setClearColor(0xb7c3f3,1);
+renderer.setClearColor(0xa7c3f0,1);
 // colorCode , opacity
 
 const light = new THREE.AmbientLight( 0xffffff,1 ); // soft white light
@@ -42,7 +42,7 @@ const redLight = new Audio('./music/redLightF.mp3')
 const shot = new Audio('./music/shot.mp3')
 const endMusic = 0
 
-function createCube(size,positionX, rotateY=0, color=0xfbc851){
+function createCube(size,positionX, rotateY=0, color=0x709900){
     const geometry = new THREE.BoxGeometry(size.w,size.h,size.d);
     const material = new THREE.MeshBasicMaterial( { color: color } );
     const cube = new THREE.Mesh( geometry, material );
@@ -107,9 +107,9 @@ class Doll{
 }
 
 function createTrackToRun(){
-    createCube({w:startPosition*2+.2,h:1.5,d:1},0,0,0xe59716).position.z = -1
-    createCube({w:.2,h:1.5,d:1},startPosition,-.35)
-    createCube({w:.2,h:1.5,d:1},endPosition,.35)
+    createCube({w:startPosition*2+1,h:1.7,d:1},0,0,0x005900).position.z = -1
+    createCube({w:.2,h:1.7,d:1},startPosition,-.35)
+    createCube({w:.2,h:1.7,d:1},endPosition,.35)
 }
 createTrackToRun(); 
 let doll = new Doll();
@@ -151,7 +151,7 @@ class Player{
             greenLight.pause();
             redLight.pause();
             gameOver.play();
-            text.innerText = "You Win!"
+            text.innerText = "You Win!🎉"
             gameStatus = "over"
         }
     }
@@ -180,18 +180,18 @@ async function initGame(){
     await delay(1100)
     text.innerText = "Starting in 1"
     await delay(1500)
-    text.innerText = "Go!"
+    text.innerText = "Go!⛳"
     startGame();
 }
 
 function startGame(){
     gameStatus="started"
-    let progress = createCube({w:8,h:.1,d:1},0)
+    let progress = createCube({w:8,h:.01,d:1},0)
     progress.position.y=3.5
     gsap.to(progress.scale,{x:0,duration:TIME_LIMIT,ease:"none"})
     setTimeout(()=>{
         if(gameStatus != "over"){
-            text.innerText = "You ran out of time"
+            text.innerText = "You ran out of time!⏱"
             greenLight.pause();
             redLight.pause();
             gameStatus="over"
