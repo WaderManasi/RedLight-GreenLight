@@ -5,10 +5,20 @@
 }
 .text{
     position: fixed;
-    font-size: 3em;
+    font-size: 2.5em;
     font-weight: bold;
     left: 50%;
     top: 10px;
     text-shadow: 0 2px 5px rgba(0,0,0,.5);
     transform: translateX(-50%);
+    color: rgb(8, 35, 48);
+}
+.footer{
+    position: fixed;
+    bottom:0;
+    right: 0;left:0 ;
+    background-color: azure;
+    display: flex;
+    justify-content: center;
+    padding: 16px 0 16px 0;
 }
