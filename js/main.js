@@ -169,6 +169,8 @@ const player = new Player();
 // Initial
 async function initGame(){
     gameOver.pause();
+    greenLight.pause();
+    redLight.pause();
     previewMusic.pause();
     introMusic.play();
     await delay(1100)
@@ -200,9 +202,6 @@ function startGame(){
             //         document.querySelector('.modal').style.display="none";
             //     }
             // })
-            setTimeout(()=>{
-                initGame
-            },6000)
         }
     },TIME_LIMIT*1000)
     doll.start()
