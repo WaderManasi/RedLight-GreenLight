@@ -101,7 +101,7 @@ class Doll{
         this.lookBack();
         await delay((Math.random() * 100)+1000);
         this.lookFront();
-        await delay((Math.random() * 750)+1000);
+        await delay((Math.random() * 750)+750);
         this.start();
     }
 }
